@@ -47,6 +47,12 @@ app.get('/view/:name', function(req, res){
 	});
 });
 
+app.get('/delete/:name', function(req, res){
+	fs.unlink(__dirname + '/md/' + req.params.name + '.md', function(err){
+		res.redirect('/');
+	}); 
+});
+
 http.createServer(app).listen(3000, function(){
 	console.log('listening on 3000');
 });
