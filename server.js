@@ -12,7 +12,40 @@ app.use(express.urlencoded());
 
 app.use(app.router);
 
-// TODO: we will fill this in later....
+app.get('/', function(req, res){
+	fs.readdir(__dirname + '/md', function(err, files){
+		if(err) files = [];
+		files = files.filter(function(f){ return f.match(/\.md$/i); })
+			.map(function(f) { return f.replace(/\.md$/i, ''); });
+		res.render('home', { pageTitle: 'Home', files: files });
+	});
+});
+
+app.get('/edit/:name', function(req, res){
+	var name = req.params.name;
+	fs.readFile(__dirname + '/md/' + name + '.md', function(err, data){
+		// if there's an error, it probably means the file doesn't exist,
+		// meaning this is a new file: just set data to an empty string
+		if(err) data = '';
+		res.render('edit', { pageTitle: 'Editing ' + name, name: name, content: data });
+	});
+});
+
+app.post('/edit/:name', function(req, res){
+	var name = req.params.name;
+	fs.writeFile(__dirname + '/md/' + name + '.md', req.body.content, function(err){
+		if(err) return res.redirect('/');
+		res.redirect('/view/' + name);
+	});
+});
+
+app.get('/view/:name', function(req, res){
+	var name = req.params.name;
+	fs.readFile(__dirname + '/md/' + name + '.md', { encoding: 'utf8' }, function(err, data){
+		if(err) res.redirect('/');
+		res.render('view', { pageTitle: 'Viewing ' + name, name: name, content: marked(data) });
+	});
+});
 
 http.createServer(app).listen(3000, function(){
 	console.log('listening on 3000');
