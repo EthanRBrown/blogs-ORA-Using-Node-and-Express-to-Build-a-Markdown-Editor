@@ -53,6 +53,14 @@ app.get('/delete/:name', function(req, res){
 	}); 
 });
 
+app.get('/rename/:oldName/:newName', function(req, res){
+	var oldName = __dirname + '/md/' + req.params.oldName + '.md';
+	var newName = __dirname + '/md/' + req.params.newName + '.md';
+	fs.rename(oldName, newName, function(){
+		res.redirect('/');
+	});
+});
+
 http.createServer(app).listen(3000, function(){
 	console.log('listening on 3000');
 });
