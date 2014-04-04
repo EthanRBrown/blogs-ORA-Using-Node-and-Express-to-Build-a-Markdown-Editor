@@ -1,0 +1,40 @@
+<div>
+	<div>
+		{{#each files}}
+			<a class="btn btn-default" href="/view/{{.}}">{{.}}</a>
+		{{else}}
+			<i>No saved files.</i>
+		{{/each}}
+	</div>	
+	<hr>
+	<a class="btn btn-primary" data-action="showNameDialog" href="/edit">New...</a>
+</div>
+<div class="modal" id="dlgName">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="nameDialog">
+				<div class="modal-header">
+					<button type="button" name="name" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				</div>
+				<div class="modal-body">
+					Name: <input type="text" name="name" class="form-control" pattern="[\w]+">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button type="submit" class="btn btn-primary">OK</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script>
+	$('[data-action="showNameDialog"]').on('click', function(evt){
+		evt.preventDefault();
+		$('#dlgName').modal();
+	});	
+	$('#nameDialog').on('submit', function(evt){
+		evt.preventDefault();
+		var name = $(this).find('input[name="name"]').val();
+		window.location = '/edit/' + name;
+	});
+</script>
